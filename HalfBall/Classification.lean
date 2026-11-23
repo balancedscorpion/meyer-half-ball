@@ -46,7 +46,7 @@ private theorem weighted_combs_of_matrix_sum {p} {μ : TemperedDistribution (V p
   rw [← hh.tsum_eq,hh.summable.tsum_prod,tsum_fintype]
   apply Finset.sum_congr rfl
   intro i _
-  simp only [f,mul_assoc,tsum_mul_left]
+  simp only [f,euclideanPairing,mul_assoc,tsum_mul_left]
 
 /-- Appendix B. Unit-ball caps on the two locally finite actual carriers
 force a finite sum of shifted, modulated full-rank lattice combs. -/

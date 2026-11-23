@@ -21,6 +21,9 @@ def LocallyFiniteSites {p} (B : Set (V p)) : Prop :=
 /-- Closed half-space with inward normal η and boundary through zero. -/
 def halfSpace {p} (η : V p) : Set (V p) := {s | 0 ≤ ⟪η, s⟫_ℝ}
 
+/-- Euclidean pairing used in the modulation of a lattice comb. -/
+noncomputable def euclideanPairing {p} (v x : V p) : ℝ := ⟪v,x⟫_ℝ
+
 /-- Origin-centred closed ball intersected with the closed measured half-space. -/
 def halfBall {p} (η : V p) (R : ℝ) : Set (V p) :=
   halfSpace η ∩ Metric.closedBall 0 R

@@ -18,7 +18,7 @@ shift, frequency and complex coefficient may differ for every summand. -/
 def WeightedLatticeCombs {p : ℕ} (μ : TemperedDistribution (V p) ℂ) : Prop :=
   ∃ (m : ℕ) (L : Fin m → LatticeCoset p) (v : Fin m → V p) (c : Fin m → ℂ),
     ∀ φ : SchwartzMap (V p) ℂ, μ φ =
-      ∑ i, c i * ∑' n, Poisson.phase ⟪v i,(L i).site n⟫_ℝ * φ ((L i).site n)
+      ∑ i, c i * ∑' n, Poisson.phase (euclideanPairing (v i) ((L i).site n)) * φ ((L i).site n)
 
 /-- Compact tests vanishing on a locally finite set U detect any genuine atom
 outside U. Its distance from other sites may depend on the chosen atom. -/

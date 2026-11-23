@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.Analysis.CStarAlgebra.Classes
 public import Mathlib.Analysis.Distribution.TemperedDistribution
 public import Mathlib.Analysis.InnerProductSpace.PiL2
 public import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
@@ -21,6 +22,9 @@ def LocallyFiniteSites {p} (B : Set (V p)) : Prop :=
 
 /-- Closed half-space with inward normal η and boundary through zero. -/
 def halfSpace {p} (η : V p) : Set (V p) := {s | 0 ≤ ⟪η, s⟫_ℝ}
+
+/-- Euclidean pairing used in the modulation of a lattice comb. -/
+noncomputable def euclideanPairing {p} (v x : V p) : ℝ := ⟪v,x⟫_ℝ
 
 /-- Origin-centred closed ball intersected with the closed measured half-space. -/
 def halfBall {p} (η : V p) (R : ℝ) : Set (V p) :=
@@ -85,7 +89,7 @@ Each term has its own lattice, shift, modulation and complex coefficient. -/
 def WeightedLatticeCombs {p : ℕ} (μ : TemperedDistribution (V p) ℂ) : Prop :=
   ∃ (m : ℕ) (L : Fin m → LatticeCoset p) (v : Fin m → V p) (c : Fin m → ℂ),
     ∀ φ : SchwartzMap (V p) ℂ, μ φ =
-      ∑ i, c i * ∑' n, Poisson.phase ⟪v i,(L i).site n⟫_ℝ * φ ((L i).site n)
+      ∑ i, c i * ∑' n, Poisson.phase (euclideanPairing (v i) ((L i).site n)) * φ ((L i).site n)
 
 /-- Theorem 1.1 for a locally finite, locally atomic Fourier pair.
 The two half-ball directions and the two sequences of radii are independent. -/
