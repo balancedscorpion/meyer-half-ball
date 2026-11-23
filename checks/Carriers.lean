@@ -12,3 +12,6 @@ import FullHalfBall
 #print axioms HalfBall.Fourier.remainder_action
 #print axioms HalfBall.Fourier.compact_atomic_model
 #print axioms HalfBall.Fourier.exists_window
+
+#print axioms HalfBall.fourier_patch_estimate
+#print axioms HalfBall.both_carriers_relatively_separated

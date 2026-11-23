@@ -72,8 +72,7 @@ theorem halfBallCount_reflected {p} {A : Set (V p)} {ω : V p} {R : ℕ → ℝ}
     simp [reflected,halfBall,halfSpace,Metric.mem_closedBall,dist_zero_right]
   rwa [he,reflected_inter,ncard_reflected]
 
-/-- Manuscript Lemma A.1, isolated as a mathematical proposition for
-tracking the missing distributional patch estimate. -/
+/-- The finite-constant form of Lemma A.1 used in the carrier-count argument. -/
 def FourierPatchEstimate (p : ℕ) : Prop :=
   ∀ (μ : TemperedDistribution (V p) ℂ) (A B : Set (V p)) (ω : V p) (R : ℕ → ℝ),
     LocallyFiniteSites A → LocallyFiniteSites B → LocalAtoms μ A → LocalAtoms (𝓕 μ) B →
