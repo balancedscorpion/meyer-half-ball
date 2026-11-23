@@ -1,5 +1,6 @@
 module
 
+public import Mathlib.Analysis.Distribution.TemperedDistribution
 public import Mathlib.Analysis.InnerProductSpace.PiL2
 public import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 public import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
@@ -57,4 +58,42 @@ theorem geometric_local_count {p : ℕ} (hp : 0 < p) (B : Set (V p)) (η : V p) 
     ∃ M : ℕ, ∀ y : V p, ((B ∩ halfSpace η) ∩ Metric.ball y 1).ncard ≤ M := by
   sorry
 
+noncomputable section
+open scoped FourierTransform
+
+/-- The locally finite carrier lists exactly the nonzero atoms on compactly supported
+Schwartz tests. Temperedness is a property of the distribution. -/
+def LocalAtoms {p} (μ : TemperedDistribution (V p) ℂ) (A : Set (V p)) : Prop :=
+  ∃ a : A → ℂ, (∀ x, a x ≠ 0) ∧ ∀ φ : SchwartzMap (V p) ℂ, HasCompactSupport φ →
+    HasSum (fun x : A => a x * φ x) (μ φ)
+
+/-- The physical and spectral directions and radius sequences are independent. -/
+def IndependentHalfBallData {p} (A B : Set (V p)) : Prop :=
+  ∃ (ω η : V p) (R S : ℕ → ℝ), ‖ω‖ = 1 ∧ ‖η‖ = 1 ∧ HalfBallCount A ω R ∧ HalfBallCount B η S
+
+structure LatticeCoset (p : ℕ) where
+  shift : V p
+  basis : (Fin p → ℝ) ≃L[ℝ] V p
+
+def LatticeCoset.site {p : ℕ} (L : LatticeCoset p) (z : Fin p → ℤ) : V p :=
+  L.shift + L.basis (fun k => (z k : ℝ))
+
+def Poisson.phase (r : ℝ) : ℂ := Real.fourierChar r
+
+/-- Equality on all Schwartz tests with a finite sum of full-rank lattice combs.
+Each term has its own lattice, shift, modulation and complex coefficient. -/
+def WeightedLatticeCombs {p : ℕ} (μ : TemperedDistribution (V p) ℂ) : Prop :=
+  ∃ (m : ℕ) (L : Fin m → LatticeCoset p) (v : Fin m → V p) (c : Fin m → ℂ),
+    ∀ φ : SchwartzMap (V p) ℂ, μ φ =
+      ∑ i, c i * ∑' n, Poisson.phase ⟪v i,(L i).site n⟫_ℝ * φ ((L i).site n)
+
+/-- Theorem 1.1 for a locally finite, locally atomic Fourier pair.
+The two half-ball directions and the two sequences of radii are independent. -/
+theorem half_ball_theorem_iff {p} (hp : 0 < p) {μ : TemperedDistribution (V p) ℂ} {A B : Set (V p)}
+    (hA : LocallyFiniteSites A) (hB : LocallyFiniteSites B)
+    (ha : LocalAtoms μ A) (hb : LocalAtoms (𝓕 μ) B) :
+    IndependentHalfBallData A B ↔ WeightedLatticeCombs μ := by
+  sorry
+
+end
 end HalfBall

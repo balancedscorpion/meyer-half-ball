@@ -1,14 +1,14 @@
 version: v0.4
 project:
-  name: A geometric local count from an ordered patch bound and a half-ball count
+  name: Independent physical and spectral half-ball counts characterize finite sums of lattice combs
   description: >-
-    Let B be locally finite in a positive-dimensional Euclidean space. Suppose a common
-    finite constant bounds the total Lebesgue volume of each admissible ordered family of
-    patches at every site. If the number of sites in origin-centred closed half-balls
-    of radii S is bounded by a constant times S to the ambient dimension along a sequence
-    tending to infinity, then one integer bounds the number of sites in the corresponding
-    closed half-space in every open unit ball. The ball centre is arbitrary, and distinct
-    sites may be arbitrarily close.
+    A crystalline tempered distribution on a positive-dimensional Euclidean space is a finite sum
+    of translated and modulated full-rank lattice Dirac combs with complex coefficients if and only
+    if its support and spectrum each admit a polynomial count of degree equal to the dimension in one
+    closed half-ball along divergent radii. The two unit normals and the two radius sequences may be
+    chosen independently. The geometric result gives a single bound on the number of sites of a
+    locally finite set in the measured half-space in every open unit ball, from its ordered
+    patch-volume bound and its half-ball count. Distinct sites may be arbitrarily close.
   authors: [Jamie Martin]
   responsible_maintainers: [Jamie Martin]
   license: Apache-2.0
@@ -20,7 +20,7 @@ sources:
     authors: [Jamie Martin]
     type: paper
     relationship: formalizes
-    location: Manuscript dated 23 November 2026, Theorem A.3 and Lemmas A.4–A.6, pages 19–22.
+    location: Manuscript dated 23 November 2026, Theorem 1.1 on page 1 and Appendix A and B, including Theorem A.3 and Lemmas A.4–A.6 on pages 19–22.
     note: The supplied PDF has SHA-256 2b07f0512d57a9a504db93931e3c1ad07280a2ed1568c6b891337dd43a6610bb.
 related_formalizations:
   - id: https://github.com/roos-j/lean-trilinearht/tree/7b4209609e6a7fb9d9935973ee8541495f943660
@@ -29,29 +29,42 @@ related_formalizations:
   - id: https://github.com/ls558/MeyerGeneralProblem/tree/43a4a33069b48d7f303113a3a2ffab25c15f4c8f/lean
     relationship: independent
     note: Related Meyer-space formalizations supplied context. The geometric result has no distribution or positive minimum-spacing assumption.
+  - id: https://github.com/balancedscorpion/lev-olevskii-lattice-cover/tree/f78b7d12876f95be3bce8b37ee57684d51b21d9c
+    relationship: adapts
+    note: The pinned MIT-licensed project supplies the unitary Laurent theorem, lattice geometry and parts of the Fourier weight-recovery proof. Uniform separation is used only within separated classes and individual lattice cosets.
 status:
-  scope: Theorem A.3 and its geometric proof in every positive dimension.
+  scope: The geometric Theorem A.3 and both implications of Theorem 1.1, including the zero distribution, in all positive dimensions.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: [propext, Classical.choice, Quot.sound]
   main_results:
     - declaration: HalfBall.geometric_local_count
-      file: Solution.lean
+      file: HalfBallSolution.lean
       comparator_config: comparator.json
       sorry_count: 0
       axioms: [propext, Classical.choice, Quot.sound]
-  notes: The intentional Challenge placeholder is excluded from the proof-development counts.
+    - declaration: HalfBall.half_ball_theorem_iff
+      file: HalfBallSolution.lean
+      comparator_config: comparator.json
+      sorry_count: 0
+      axioms: [propext, Classical.choice, Quot.sound]
+  notes: Both intentional Challenge placeholders are excluded from the proof-development counts.
 fidelity:
   divergences: >-
     The fine grid uses disjoint closed boxes of half the cell side, ordered by corner height.
     The volume constants absorb this shrinkage. The fine mesh resolves both nonzero triple
     sums and nonzero site heights. A.6 uses an injection into the first difference set
-    times the remaining two pieces. The final bound counts sites by Set.ncard.
+    times the remaining two pieces. The final bound counts sites by Set.ncard. Half-ball density is expressed by its divergent
+    sequence criterion. A.1 supplies a finite patch constant and B.1 supplies the translated-difference
+    estimate needed for finite generation. The sharper numerical A.1 constant and the general B.1
+    single-seminorm statement are outside scope. B.4 derives bounded coefficients by finite
+    character recurrences and compactness of translated lattice positions, then uses inclusion–exclusion
+    and the finite dual-class argument to recover coefficients at all sites.
 automation:
   methods:
     - method: agent
       tool_setup: OpenAI Codex, Lean 4, Lake and Mathlib
-      notes: Codex wrote the proof under the author's task specification, integrated the BSG module and ran the verification commands.
+      notes: Codex wrote the proof under the author's task specification, adapted the credited upstream modules and ran the builds, axiom audits and local kernel comparisons.
 review:
   status: self-assessed
-  notes: The axiom audit checks the exported A.3 and the A.4–A.6 proof chain. Theorem 1.1 is outside this submission.
+  notes: The local axiom audits cover both exported results and intermediate geometric, Fourier, lattice-cover and weight-recovery theorems. Awaiting author review and the public Palomar preflight.

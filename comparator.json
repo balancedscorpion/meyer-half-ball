@@ -1,8 +1,9 @@
 {
-  "challenge_module": "Challenge",
-  "solution_module": "Solution",
+  "challenge_module": "HalfBallChallenge",
+  "solution_module": "HalfBallSolution",
   "theorem_names": [
-    "HalfBall.geometric_local_count"
+    "HalfBall.geometric_local_count",
+    "HalfBall.half_ball_theorem_iff"
   ],
   "permitted_axioms": [
     "propext",

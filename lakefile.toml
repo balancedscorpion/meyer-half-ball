@@ -1,6 +1,6 @@
 name = "MeyerHalfBall"
 version = "0.1.0"
-defaultTargets = ["Challenge", "Solution", "FullHalfBall"]
+defaultTargets = ["HalfBallChallenge", "HalfBallSolution", "FullHalfBall"]
 
 [[require]]
 name = "mathlib"
@@ -16,10 +16,10 @@ rev = "f78b7d12876f95be3bce8b37ee57684d51b21d9c"
 name = "HalfBall"
 
 [[lean_lib]]
-name = "Challenge"
+name = "HalfBallChallenge"
 
 [[lean_lib]]
-name = "Solution"
+name = "HalfBallSolution"
 
 [[lean_lib]]
 name = "FullHalfBall"

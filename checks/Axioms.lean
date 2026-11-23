@@ -1,6 +1,6 @@
 module
 
-import Solution
+import HalfBallSolution
 
 #print axioms Auto.balog_szemeredi_gowers
 #print axioms HalfBall.energy_decomposition

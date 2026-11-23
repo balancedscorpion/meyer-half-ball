@@ -121,7 +121,7 @@ theorem physical_cover_of_finite_generation {d : ℕ}
     obtain ⟨x,hx,hfx,hc⟩ := hR (WithLp.toLp 2 c)
     exact ⟨x,hx,hfx,(dist_pi_le_iff (dist_nonneg.trans hc)).mpr fun i => (PiLp.dist_apply_le (WithLp.toLp 2 c) x i).trans hc⟩
 
-private theorem cover_of_matrix_cover {p} {A : Set (V p)} (h : HasFiniteLatticeCover A) : LatticeCovered A := by
+theorem latticeCovered_of_matrixCover {p} {A : Set (V p)} (h : HasFiniteLatticeCover A) : LatticeCovered A := by
   classical
   obtain ⟨m,_,t,T,hT,hs⟩ := h
   let e (i : Fin m) := (T i).toLinearEquiv' ((T i).isUnit_iff_isUnit_det.mpr (isUnit_iff_ne_zero.mpr (hT i))).invertible
@@ -130,7 +130,7 @@ private theorem cover_of_matrix_cover {p} {A : Set (V p)} (h : HasFiniteLatticeC
   obtain ⟨i,z,he⟩ := hs x hx
   exact mem_iUnion.mpr ⟨i,z,he.symm⟩
 
-private theorem cap_reflected {p M} {A : Set (V p)} (ha : BallCap A M) : BallCap (reflected A) M := by
+theorem cap_reflected {p M} {A : Set (V p)} (ha : BallCap A M) : BallCap (reflected A) M := by
   classical
   intro y T hT
   let e : V p ↪ V p := ⟨Neg.neg,neg_injective⟩
@@ -151,17 +151,25 @@ private theorem closure_reflected {p} (A : Set (V p)) : AddSubgroup.closure (ref
 /-- Both lattice covers follow from bounded unit-ball counts and finite
 generation of both carrier groups. These last two hypotheses are the
 finite-generation conclusions of Proposition B.2. -/
+theorem matrix_covers_of_finite_generation {p M N} {μ : TemperedDistribution (V p) ℂ}
+    {A B : Set (V p)} (hA : LocallyFiniteSites A) (hB : LocallyFiniteSites B)
+    (ha : LocalAtoms μ A) (hb : LocalAtoms (𝓕 μ) B) (cA : BallCap A M) (cB : BallCap B N)
+    (fgA : (AddSubgroup.closure A).FG) (fgB : (AddSubgroup.closure B).FG) :
+    HasFiniteLatticeCover A ∧ HasFiniteLatticeCover B := by
+  obtain ⟨r,hr⟩ := localAtoms_double_fourier ha
+  obtain ⟨a,ha⟩ := ha
+  obtain ⟨b,hb⟩ := hb
+  exact ⟨physical_cover_of_finite_generation ha cA hA hb cB hB fgA fgB,
+    physical_cover_of_finite_generation hb cB hB hr (cap_reflected cA)
+      (locallyFinite_reflected hA) fgB (closure_reflected A ▸ fgA)⟩
+
 theorem lattice_covers_of_finite_generation {p M N} {μ : TemperedDistribution (V p) ℂ}
     {A B : Set (V p)} (hA : LocallyFiniteSites A) (hB : LocallyFiniteSites B)
     (ha : LocalAtoms μ A) (hb : LocalAtoms (𝓕 μ) B) (cA : BallCap A M) (cB : BallCap B N)
     (fgA : (AddSubgroup.closure A).FG) (fgB : (AddSubgroup.closure B).FG) :
     LatticeCovered A ∧ LatticeCovered B := by
-  obtain ⟨r,hr⟩ := localAtoms_double_fourier ha
-  obtain ⟨a,ha⟩ := ha
-  obtain ⟨b,hb⟩ := hb
-  exact ⟨cover_of_matrix_cover (physical_cover_of_finite_generation ha cA hA hb cB hB fgA fgB),
-    cover_of_matrix_cover (physical_cover_of_finite_generation hb cB hB hr (cap_reflected cA)
-      (locallyFinite_reflected hA) fgB (closure_reflected A ▸ fgA))⟩
+  obtain ⟨u,v⟩ := matrix_covers_of_finite_generation hA hB ha hb cA cB fgA fgB
+  exact ⟨latticeCovered_of_matrixCover u,latticeCovered_of_matrixCover v⟩
 
 /-- B.2 for the two carriers, with the physical assertion obtained by
 Fourier reflection. -/
@@ -179,6 +187,12 @@ theorem lattice_covers_of_ball_caps {p M N} {μ : TemperedDistribution (V p) ℂ
   obtain ⟨fgA,fgB⟩ := both_carrier_groups_fg hA hB ha hb cA cB
   exact lattice_covers_of_finite_generation hA hB ha hb cA cB fgA fgB
 
+theorem ballCap_of_count {p M : ℕ} (E : Set (V p)) (hf : LocallyFiniteSites E) (h : ∀ x, (E ∩ ball x 1).ncard ≤ M) : BallCap E M := by
+  intro x T ht
+  have hfinite := (hf _ (isCompact_closedBall x 1)).subset (show E ∩ ball x 1 ⊆ E ∩ closedBall x 1 from
+      fun z hz => ⟨hz.1,ball_subset_closedBall hz.2⟩)
+  simpa using (ncard_le_ncard ht hfinite).trans (h x)
+
 /-- The independent half-ball hypotheses give finite full-rank lattice
 coset covers for both actual carriers. The weights are the subject of B.4. -/
 theorem lattice_covers_of_half_balls {p} (hp : 0 < p)
@@ -188,11 +202,6 @@ theorem lattice_covers_of_half_balls {p} (hp : 0 < p)
     (hω : ‖ω‖ = 1) (hη : ‖η‖ = 1) (hR : HalfBallCount A ω R) (hS : HalfBallCount B η S) :
     LatticeCovered A ∧ LatticeCovered B := by
   obtain ⟨M,hM⟩ := both_carriers_relatively_separated hp hA hB ha hb hω hη hR hS
-  have cap (E : Set (V p)) (hf : LocallyFiniteSites E) (h : ∀ x, (E ∩ ball x 1).ncard ≤ M) : BallCap E M := by
-    intro x T ht
-    have hfinite := (hf _ (isCompact_closedBall x 1)).subset (show E ∩ ball x 1 ⊆ E ∩ closedBall x 1 from
-      fun z hz => ⟨hz.1,ball_subset_closedBall hz.2⟩)
-    simpa using (ncard_le_ncard ht hfinite).trans (h x)
-  exact lattice_covers_of_ball_caps hA hB ha hb (cap A hA fun x => (hM x).1) (cap B hB fun x => (hM x).2)
+  exact lattice_covers_of_ball_caps hA hB ha hb (ballCap_of_count A hA fun x => (hM x).1) (ballCap_of_count B hB fun x => (hM x).2)
 
 end HalfBall

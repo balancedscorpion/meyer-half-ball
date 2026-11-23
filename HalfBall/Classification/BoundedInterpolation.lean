@@ -38,23 +38,24 @@ private theorem solve_bounded {ι : Type*} [Fintype ι] [DecidableEq ι] (K : Ma
 
 /-- A fixed band and a fixed sup norm bound suffice to interpolate arbitrary
 unit-bounded data on any finite separated class. -/
-theorem finite_separated_interpolation (p : ℕ) :
+theorem finite_separated_interpolation_at_scale (p : ℕ) {δ : ℝ} (hδ : 0 < δ) :
     ∃ r C : ℝ, 0 ≤ r ∧ 1 ≤ C ∧ ∀ (E : Finset (V p)),
-      (E : Set (V p)).Pairwise (fun x y => 1 ≤ dist x y) → ∀ b : E → ℂ, (∀ i, ‖b i‖ ≤ 1) →
+      (E : Set (V p)).Pairwise (fun x y => δ ≤ dist x y) → ∀ b : E → ℂ, (∀ i, ‖b i‖ ≤ 1) →
       ∃ f : V p → ℂ, Bandwidth r f ∧ (∀ x, ‖f x‖ ≤ C) ∧ ∀ i : E, f i = b i := by
   classical
   obtain ⟨a,ha,his⟩ := bandlimited_isolation_at_point p (η := 1) zero_lt_one
   obtain ⟨φ,hφ,h0,_⟩ := his ∅ (by simp) 0
   let k := 𝓕 φ
-  obtain ⟨L,hL,hrows⟩ := Fourier.separated_schwartz_offDiagonal k (η := 1) (ε := 1/2) zero_lt_one (by norm_num)
+  obtain ⟨L,hL,hrows⟩ := Fourier.separated_schwartz_offDiagonal k (η := δ) (ε := 1/2) hδ (by norm_num)
   have hLpos : 0 < L := by linarith
   let κ := Fourier.sample k L hLpos 0
-  obtain ⟨A,hA,hpack⟩ := Fourier.separated_sample_sum κ
+  let κδ := Fourier.sample κ δ hδ 0
+  obtain ⟨A,hA,hpack⟩ := Fourier.separated_sample_sum κδ
   refine ⟨L*a,max 1 (2*A),mul_nonneg hLpos.le ha.le,le_max_left ..,fun E hE b hb => ?_⟩
   let K : Matrix E E ℂ := fun i j => k (L • (i.val-j.val))
   have hd (i : E) : K i i = 1 := by simpa [K,k] using h0
   have hr (i : E) : ∑ j ∈ univ.erase i, ‖K i j‖ ≤ 1/2 := by
-    have hs (j l : E) (hjl : j ≠ l) : 1 ≤ dist (-j.val) (-l.val) := by
+    have hs (j l : E) (hjl : j ≠ l) : δ ≤ dist (-j.val) (-l.val) := by
       simpa using hE j.property l.property (fun h => hjl (Subtype.ext h))
     have h := hrows (fun j : E => -j.val) hs i univ
     have heq : univ.filter (fun j : E => j ≠ i) = univ.erase i := by ext; simp
@@ -78,15 +79,26 @@ theorem finite_separated_interpolation (p : ℕ) :
       simpa [mem_closedBall,norm_smul,Real.norm_eq_abs,abs_of_pos hLpos,inv_mul_eq_div,div_le_iff₀ hLpos,mul_comm] using hh
     simpa only [θ,fourier_fourierInv_eq] using Bandwidth.of_fourier θ hs
   refine ⟨fun x => ∑ i : E,c i * g i x,Bandwidth.sum univ _ (by positivity) (fun i _ => (hg i).smul _),fun x => ?_,fun i => ?_⟩
-  · have hs (i j : E) (hne : i ≠ j) : 1 ≤ dist (x-i.val) (x-j.val) := by
-      rw [show x-i.val = x + (-i.val) by abel,show x-j.val = x + (-j.val) by abel,dist_add_left,dist_neg_neg]
-      exact hE i.property j.property (fun h => hne (Subtype.ext h))
-    have hpack' := hpack (fun i : E => x-i.val) hs univ
+  · let y (i : E) := δ⁻¹ • (x-i.val)
+    have hs (i j : E) (hne : i ≠ j) : 1 ≤ dist (y i) (y j) := by
+      have hh := hE i.property j.property (fun h => hne (Subtype.ext h))
+      have he : (x-i.val)-(x-j.val) = -(i.val-j.val) := by abel
+      change 1 ≤ ‖δ⁻¹ • (x-i.val) - δ⁻¹ • (x-j.val)‖
+      rw [← smul_sub,he,norm_smul,Real.norm_eq_abs,abs_inv,abs_of_pos hδ,norm_neg,inv_mul_eq_div,le_div_iff₀ hδ,one_mul]
+      exact hh
+    have hpack' : ∑ i : E, ‖κ (x-i.val)‖ ≤ A := by
+      simpa [κδ,Fourier.sample_apply,y,smul_smul,hδ.ne'] using hpack y hs univ
     calc _ ≤ ∑ i : E, ‖c i*g i x‖ := norm_sum_le ..
          _ ≤ ∑ i : E, 2*‖κ (x-i.val)‖ := sum_le_sum (fun i _ => by
            simp only [norm_mul,κ,g,Fourier.sample_apply,sub_zero]
            exact mul_le_mul_of_nonneg_right (hn _) (norm_nonneg _))
          _ ≤ max 1 (2*A) := by rw [← Finset.mul_sum]; exact (by gcongr : 2* _ ≤ 2*A) |>.trans (le_max_right ..)
   · simpa [K,g,Matrix.mulVec,dotProduct,mul_comm] using congrFun hc i
+
+theorem finite_separated_interpolation (p : ℕ) :
+    ∃ r C : ℝ, 0 ≤ r ∧ 1 ≤ C ∧ ∀ (E : Finset (V p)),
+      (E : Set (V p)).Pairwise (fun x y => 1 ≤ dist x y) → ∀ b : E → ℂ, (∀ i, ‖b i‖ ≤ 1) →
+      ∃ f : V p → ℂ, Bandwidth r f ∧ (∀ x, ‖f x‖ ≤ C) ∧ ∀ i : E, f i = b i :=
+  finite_separated_interpolation_at_scale p zero_lt_one
 
 end HalfBall.Classification

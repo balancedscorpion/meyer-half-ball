@@ -13,3 +13,8 @@ import FullHalfBall
 #print axioms HalfBall.Classification.phase_difference_control
 #print axioms HalfBall.both_carrier_groups_fg
 #print axioms HalfBall.lattice_covers_of_half_balls
+
+#print axioms HalfBall.Weights.spectral_weights_bounded
+#print axioms HalfBall.weighted_combs_of_ball_caps
+#print axioms HalfBall.weighted_combs_of_half_balls
+#print axioms HalfBall.half_ball_theorem_iff
