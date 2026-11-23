@@ -1,0 +1,14 @@
+name = "MeyerHalfBall"
+version = "0.1.0"
+defaultTargets = ["HalfBall"]
+
+[[require]]
+name = "mathlib"
+git = "https://github.com/leanprover-community/mathlib4"
+rev = "d870b9068518a0870842d15a0cd42637ec30b587"
+
+[[lean_lib]]
+name = "HalfBall"
+
+[[lean_lib]]
+name = "Challenge"
