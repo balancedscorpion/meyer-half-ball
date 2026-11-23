@@ -9,9 +9,9 @@ jobs:
     uses: PalomarRegistry/PalomarSubmission/.github/workflows/submission.yml@14aa8d6b3c2f14a8540605e37144560b9a00e7e7
     with:
       repository: ${{ github.repository }}
-      commit: ${{ github.sha }}
+      commit: 26a1a8aac74a801aec62a84984f22a171a32b6fc
       pipeline_commit: 14aa8d6b3c2f14a8540605e37144560b9a00e7e7
       request_id: halfball0001
       mode: full
       execution_profile: palomar-standard-v1
-      options: '{"comparator_config_path":"comparator.json","authorization_relationship":"I have approval from a responsible author or maintainer"}'
+      options: '{"comparator_config_path":"comparator.json","authorization_relationship":"I am a responsible author or maintainer"}'
