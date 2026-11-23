@@ -9,3 +9,7 @@ import FullHalfBall
 #print axioms HalfBall.relatively_dense_filtered_atoms
 #print axioms MeyerGeneralProblem.LevOlevskii.unitaryUnitEquationFiniteness
 #print axioms HalfBall.lattice_covers_of_finite_generation
+
+#print axioms HalfBall.Classification.phase_difference_control
+#print axioms HalfBall.both_carrier_groups_fg
+#print axioms HalfBall.lattice_covers_of_half_balls

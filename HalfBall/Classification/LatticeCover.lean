@@ -3,6 +3,8 @@ Adapted from AppendixA/LaurentReduction.lean in the pinned lev-olevskii-lattice-
 See LICENSES/lev-olevskii-lattice-cover-MIT.txt.
 -/
 module
+public import HalfBall.Classification.FiniteGeneration
+public import HalfBall.FourierPatch
 public import HalfBall.Classification.FilteredDensity
 public import HalfBall.LatticeCount
 public import HalfBall.Classification.CosetRank
@@ -160,5 +162,37 @@ theorem lattice_covers_of_finite_generation {p M N} {μ : TemperedDistribution (
   exact ⟨cover_of_matrix_cover (physical_cover_of_finite_generation ha cA hA hb cB hB fgA fgB),
     cover_of_matrix_cover (physical_cover_of_finite_generation hb cB hB hr (cap_reflected cA)
       (locallyFinite_reflected hA) fgB (closure_reflected A ▸ fgA))⟩
+
+/-- B.2 for the two carriers, with the physical assertion obtained by
+Fourier reflection. -/
+theorem both_carrier_groups_fg {p M N} {μ : TemperedDistribution (V p) ℂ} {A B : Set (V p)}
+    (hA : LocallyFiniteSites A) (hB : LocallyFiniteSites B)
+    (ha : LocalAtoms μ A) (hb : LocalAtoms (𝓕 μ) B) (cA : BallCap A M) (cB : BallCap B N) :
+    (AddSubgroup.closure A).FG ∧ (AddSubgroup.closure B).FG := by
+  have hr := Classification.spectral_group_fg hB (locallyFinite_reflected hA) hb (localAtoms_double_fourier ha) cB
+  exact ⟨closure_reflected A ▸ hr,Classification.spectral_group_fg hA hB ha hb cA⟩
+
+theorem lattice_covers_of_ball_caps {p M N} {μ : TemperedDistribution (V p) ℂ} {A B : Set (V p)}
+    (hA : LocallyFiniteSites A) (hB : LocallyFiniteSites B)
+    (ha : LocalAtoms μ A) (hb : LocalAtoms (𝓕 μ) B) (cA : BallCap A M) (cB : BallCap B N) :
+    LatticeCovered A ∧ LatticeCovered B := by
+  obtain ⟨fgA,fgB⟩ := both_carrier_groups_fg hA hB ha hb cA cB
+  exact lattice_covers_of_finite_generation hA hB ha hb cA cB fgA fgB
+
+/-- The independent half-ball hypotheses give finite full-rank lattice
+coset covers for both actual carriers. The weights are the subject of B.4. -/
+theorem lattice_covers_of_half_balls {p} (hp : 0 < p)
+    {μ : TemperedDistribution (V p) ℂ} {A B : Set (V p)} {ω η : V p} {R S : ℕ → ℝ}
+    (hA : LocallyFiniteSites A) (hB : LocallyFiniteSites B)
+    (ha : LocalAtoms μ A) (hb : LocalAtoms (𝓕 μ) B)
+    (hω : ‖ω‖ = 1) (hη : ‖η‖ = 1) (hR : HalfBallCount A ω R) (hS : HalfBallCount B η S) :
+    LatticeCovered A ∧ LatticeCovered B := by
+  obtain ⟨M,hM⟩ := both_carriers_relatively_separated hp hA hB ha hb hω hη hR hS
+  have cap (E : Set (V p)) (hf : LocallyFiniteSites E) (h : ∀ x, (E ∩ ball x 1).ncard ≤ M) : BallCap E M := by
+    intro x T ht
+    have hfinite := (hf _ (isCompact_closedBall x 1)).subset (show E ∩ ball x 1 ⊆ E ∩ closedBall x 1 from
+      fun z hz => ⟨hz.1,ball_subset_closedBall hz.2⟩)
+    simpa using (ncard_le_ncard ht hfinite).trans (h x)
+  exact lattice_covers_of_ball_caps hA hB ha hb (cap A hA fun x => (hM x).1) (cap B hB fun x => (hM x).2)
 
 end HalfBall
