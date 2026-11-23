@@ -1,6 +1,6 @@
 name = "MeyerHalfBall"
 version = "0.1.0"
-defaultTargets = ["HalfBall"]
+defaultTargets = ["Challenge", "Solution"]
 
 [[require]]
 name = "mathlib"
@@ -12,3 +12,6 @@ name = "HalfBall"
 
 [[lean_lib]]
 name = "Challenge"
+
+[[lean_lib]]
+name = "Solution"

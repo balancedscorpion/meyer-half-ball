@@ -1,0 +1,57 @@
+version: v0.4
+project:
+  name: A geometric local count from an ordered patch bound and a half-ball count
+  description: >-
+    Let B be locally finite in a positive-dimensional Euclidean space. Suppose a common
+    finite constant bounds the total Lebesgue volume of each admissible ordered family of
+    patches at every site. If the number of sites in origin-centred closed half-balls
+    of radii S is bounded by a constant times S to the ambient dimension along a sequence
+    tending to infinity, then one integer bounds the number of sites in the corresponding
+    closed half-space in every open unit ball. The ball centre is arbitrary, and distinct
+    sites may be arbitrarily close.
+  authors: [Jamie Martin]
+  responsible_maintainers: [Jamie Martin]
+  license: Apache-2.0
+classification:
+  arxiv: [math.CA, math.CO]
+  msc2020: [42B10, 11B30]
+sources:
+  - title: Half-line density, spectral generation and lattice structure of crystalline measures
+    authors: [Jamie Martin]
+    type: paper
+    relationship: formalizes
+    location: Manuscript dated 23 November 2026, Theorem A.3 and Lemmas A.4–A.6, pages 19–22.
+    note: The supplied PDF has SHA-256 2b07f0512d57a9a504db93931e3c1ad07280a2ed1568c6b891337dd43a6610bb.
+related_formalizations:
+  - id: https://github.com/roos-j/lean-trilinearht/tree/7b4209609e6a7fb9d9935973ee8541495f943660
+    relationship: adapts
+    note: The Apache-2.0 finite abelian-group Balog–Szemerédi–Gowers module retains its authorship header and builds with Mathlib alone.
+  - id: https://github.com/ls558/MeyerGeneralProblem/tree/43a4a33069b48d7f303113a3a2ffab25c15f4c8f/lean
+    relationship: independent
+    note: Related Meyer-space formalizations supplied context. The geometric result has no distribution or positive minimum-spacing assumption.
+status:
+  scope: Theorem A.3 and its geometric proof in every positive dimension.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: [propext, Classical.choice, Quot.sound]
+  main_results:
+    - declaration: HalfBall.geometric_local_count
+      file: Solution.lean
+      comparator_config: comparator.json
+      sorry_count: 0
+      axioms: [propext, Classical.choice, Quot.sound]
+  notes: The intentional Challenge placeholder is excluded from the proof-development counts.
+fidelity:
+  divergences: >-
+    The fine grid uses disjoint closed boxes of half the cell side, ordered by corner height.
+    The volume constants absorb this shrinkage. The fine mesh resolves both nonzero triple
+    sums and nonzero site heights. A.6 uses an injection into the first difference set
+    times the remaining two pieces. The final bound counts sites by Set.ncard.
+automation:
+  methods:
+    - method: agent
+      tool_setup: OpenAI Codex, Lean 4, Lake and Mathlib
+      notes: Codex wrote the proof under the author's task specification, integrated the BSG module and ran the verification commands.
+review:
+  status: self-assessed
+  notes: The axiom audit checks the exported A.3 and the A.4–A.6 proof chain. Theorem 1.1 is outside this submission.

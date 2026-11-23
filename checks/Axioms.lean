@@ -1,4 +1,6 @@
-import HalfBall
+module
+
+import Solution
 
 #print axioms Auto.balog_szemeredi_gowers
 #print axioms HalfBall.energy_decomposition
@@ -8,3 +10,5 @@ import HalfBall
 #print axioms HalfBall.geometric_local_count_of_representations
 #print axioms HalfBall.representations_of_anchored_triangles
 #print axioms HalfBall.geometric_local_count_of_anchored_triangles
+#print axioms HalfBall.anchored_triangle_bound
+#print axioms HalfBall.geometric_local_count
