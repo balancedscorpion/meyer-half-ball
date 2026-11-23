@@ -1,0 +1,11 @@
+module
+
+import FullHalfBall
+
+#print axioms HalfBall.separated_classes_of_ballCap
+#print axioms HalfBall.spectral_window_uniqueness
+#print axioms HalfBall.spectral_carrier_relatively_dense
+#print axioms HalfBall.restricted_character_rank_bound
+#print axioms HalfBall.relatively_dense_filtered_atoms
+#print axioms MeyerGeneralProblem.LevOlevskii.unitaryUnitEquationFiniteness
+#print axioms HalfBall.lattice_covers_of_finite_generation

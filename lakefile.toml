@@ -7,6 +7,11 @@ name = "mathlib"
 git = "https://github.com/leanprover-community/mathlib4"
 rev = "d870b9068518a0870842d15a0cd42637ec30b587"
 
+[[require]]
+name = "LevOlevskiiLatticeCover"
+git = "https://github.com/balancedscorpion/lev-olevskii-lattice-cover.git"
+rev = "f78b7d12876f95be3bce8b37ee57684d51b21d9c"
+
 [[lean_lib]]
 name = "HalfBall"
 
